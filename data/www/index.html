@@ -75,6 +75,8 @@
                     return;
                 }
                 const jsonText = JSON.parse( testJsonField.value );
+                console.log("Raw json: ", testJsonField.value);
+                console.log("Parsed json: ", jsonText);
                 const response = await fetch("/testSave",{
                     method: "POST",
                     headers: {
