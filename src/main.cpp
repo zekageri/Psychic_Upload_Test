@@ -205,7 +205,9 @@ void setup() {
 
         // setup server config stuff here
         server.config.max_uri_handlers = 20;  // maximum number of uri handlers (.on() calls)
-
+        server.maxUploadSize = MAX_UPLOAD_SIZE;
+        server.maxRequestBodySize = MAX_REQUEST_BODY_SIZE;
+        
 #ifdef PSY_ENABLE_SSL
         server.ssl_config.httpd.max_uri_handlers = 20;  // maximum number of uri handlers (.on() calls)
 

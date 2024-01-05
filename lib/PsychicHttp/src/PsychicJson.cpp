@@ -10,15 +10,17 @@
       _root = _jsonBuffer.createObject();
   }
 #else
-  PsychicJsonResponse::PsychicJsonResponse(PsychicRequest *request, bool isArray, size_t maxJsonBufferSize) :
-    PsychicResponse(request),
-    _jsonBuffer(maxJsonBufferSize)
+  PsychicJsonResponse::PsychicJsonResponse(PsychicRequest *request, bool isArray) :
+    PsychicResponse(request)
+    //_jsonBuffer(maxJsonBufferSize)
   {
     setContentType(JSON_MIMETYPE);
     if (isArray)
-      _root = _jsonBuffer.createNestedArray();
+      //_root = _jsonBuffer.createNestedArray();
+      _root = _jsonBuffer.to<JsonArray>();
     else
-      _root = _jsonBuffer.createNestedObject();
+      //_root = _jsonBuffer.createNestedObject();
+      _root = _jsonBuffer.to<JsonObject>();
   }
 #endif
 
@@ -109,14 +111,12 @@ esp_err_t PsychicJsonResponse::send()
     _onRequest(onRequest)
   {}
 #else
-  PsychicJsonHandler::PsychicJsonHandler(size_t maxJsonBufferSize) :
-    _onRequest(NULL),
-    _maxJsonBufferSize(maxJsonBufferSize)
+  PsychicJsonHandler::PsychicJsonHandler() :
+    _onRequest(NULL)
   {};
 
-  PsychicJsonHandler::PsychicJsonHandler(PsychicJsonRequestCallback onRequest, size_t maxJsonBufferSize) :
-    _onRequest(onRequest),
-    _maxJsonBufferSize(maxJsonBufferSize)
+  PsychicJsonHandler::PsychicJsonHandler(PsychicJsonRequestCallback onRequest) :
+    _onRequest(onRequest)
   {}
 #endif
 
@@ -135,7 +135,8 @@ esp_err_t PsychicJsonHandler::handleRequest(PsychicRequest *request)
       if (!json.success())
         return request->reply(400);
     #else
-      DynamicJsonDocument jsonBuffer(this->_maxJsonBufferSize);
+      //DynamicJsonDocument jsonBuffer(this->_maxJsonBufferSize);
+      JsonDocument jsonBuffer;
       DeserializationError error = deserializeJson(jsonBuffer, request->body());
       if (error)
         return request->reply(400);
